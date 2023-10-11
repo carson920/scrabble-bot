@@ -123,8 +123,8 @@ public class Util {
                                         } else {
                                             st = h[tp.getRow()][tp.getCol()];
                                         }
-                                        ;
-                                        if (!st.containsKey(tile) && !st.containsKey("Any")) {
+
+                                        if (!st.containsKey(tile.toUpperCase()) && !st.containsKey("Any")) {
                                             valid = false;
                                             break;
                                         }
@@ -190,7 +190,7 @@ public class Util {
                                 ca[ordinalIndexOf(validWord, String.valueOf(blanks.get(0)).toUpperCase(), j)] = blanks.get(0);
                                 ca[ordinalIndexOf(validWord, String.valueOf(blanks.get(1)).toUpperCase(), k)] = blanks.get(1);
 //                                System.out.println(String.valueOf(ca));
-//                                validWordsWithBlanks.add(String.valueOf(ca));
+                                validWordsWithBlanks.add(String.valueOf(ca));
                             }
 //                    validWordsWithBlanks.add(validWord.replace(Character.toUpperCase(blanks.get(0)),blanks.get(0)), );
                         }
@@ -457,7 +457,6 @@ public class Util {
     public static void findLegalPlacementsOfRowColumn(List<Move> hvmoves, int n, boolean across, String[] line, Map<String, Move>[][] s) {
         List<Move> m = new ArrayList<>();
 //        System.out.println("n: " + n);
-        int countP = 0;
         for (int i=1; i<=7; i++) {
 
             for (int j=0; j<15; j++) {
@@ -468,10 +467,7 @@ public class Util {
                     int idx = j; // index of square on board (0 - 14)
                     int tilesRemaining = i; // no. of tiles remaining
                     while (idx < 15 && (tilesRemaining >= 1 || (!line[idx].equals(" ")))) {
-
                         Placement p = new Placement();
-                        countP++;
-//                        System.out.println(countP);
                         if (across) {
                             p.setRow(n);
                             p.setCol(idx);
