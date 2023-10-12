@@ -42,7 +42,7 @@ Sample output:
     Rack after replenishment: [G, M, O, R, S, S, Y]
     No. of tiles in bag: 61
     Current board:
-    A.B.C.D.E.F.G.H.I.J.K.L.M.N.O
+       A.B.C.D.E.F.G.H.I.J.K.L.M.N.O
       _______________________________
      1| . . . . . . . . . . . . . . |
      2| . . . . . . . . . . . . . . |
