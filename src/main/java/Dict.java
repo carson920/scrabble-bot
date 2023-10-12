@@ -9,20 +9,6 @@ public class Dict {
     private static Dict single_dict = null;
 
     private Dict() throws IOException {
-//        dict.put(2, twos);
-//        dict.put(3, threes);
-//        dict.put(4, fours);
-//        dict.put(5, fives);
-//        dict.put(6, sixes);
-//        dict.put(7, sevens);
-//        dict.put(8, eights);
-//        dict.put(9, nines);
-//        dict.put(10, tens);
-//        dict.put(11, elevens);
-//        dict.put(12, twelves);
-//        dict.put(13, thirteens);
-//        dict.put(14, fourteens);
-//        dict.put(15, fifteens);
 
         try (Stream<String> lines = Files.lines(Paths.get("csw19.txt"), Charset.defaultCharset())) {
             lines.forEachOrdered(line -> process(line));

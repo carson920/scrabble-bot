@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Define a file appender -->
+    <appender name="fileAppender" class="ch.qos.logback.core.FileAppender">
+        <file>logfile.log</file> <!-- Specify the path and filename for your log file -->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Optionally, specify a log level for the appender -->
+    <root level="debug">
+        <appender-ref ref="fileAppender"/>
+    </root>
+</configuration>

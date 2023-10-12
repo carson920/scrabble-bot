@@ -32,14 +32,6 @@ public class Move {
         this.placements = placements;
     }
 
-    @Override
-    public String toString() {
-        if (getPlacements().isEmpty()) return "No Tile Placement";
-        return  getFirstCoordinates() +
-                " " + String.join("", placements.stream().map(Placement::getTile).collect(Collectors.toList())) +
-                " " + score;
-    }
-
     public int getNoOfPlayedTiles() {
         return (int) getPlacements().stream().filter(a -> !a.isExisting()).count();
     }
@@ -60,5 +52,13 @@ public class Move {
         } else {
             return "" + col + row;
         }
+    }
+
+    @Override
+    public String toString() {
+        if (getPlacements().isEmpty()) return "To be evaluated";
+        return  getFirstCoordinates() +
+                " " + String.join("", placements.stream().map(Placement::getTile).collect(Collectors.toList())) +
+                " " + score;
     }
 }
