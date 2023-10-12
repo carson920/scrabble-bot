@@ -312,7 +312,7 @@ public class Util {
 
     public static void printBoard(String[][] board) {
         System.out.println("Current board:");
-        System.out.println("   A.B.C.D.E.F.G.H.I.J.K.L.M.N.O ");
+        System.out.println("   A B C D E F G H I J K L M N O ");
         System.out.println("  _______________________________");
         for (int i=0; i<15; i++) {
             StringBuilder sb = new StringBuilder();
