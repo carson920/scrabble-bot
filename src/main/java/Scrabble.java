@@ -11,7 +11,6 @@ public class Scrabble {
 
     private static List<String> myList = new ArrayList<>();
 
-
     public static void main(String[] args) throws IOException {
         logger.info("This is an info message.");
         logger.error("This is an error message.");

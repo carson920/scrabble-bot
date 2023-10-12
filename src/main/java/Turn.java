@@ -51,14 +51,11 @@ public class Turn {
     @Override
     public String toString() {
         if (pass) {
-            return "Pass";
+            return "Pass" + " with rack: " + rack;
         } else if (!exchange.isEmpty()) {
             return "Exchange";
         } else {
-            return "Turn{" +
-                    "rack=" + rack +
-                    ", move=" +   move +
-                    '}';
+            return "[" + move + "] with rack: " + rack;
         }
     }
 }

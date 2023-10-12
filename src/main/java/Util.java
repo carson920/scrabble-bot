@@ -1,156 +1,154 @@
-import java.sql.Array;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 public class Util {
-    public static String alphabetize(List<String> str) {
-        str.sort(String.CASE_INSENSITIVE_ORDER);
-        String joined = str.stream().collect(Collectors.joining());
-        return joined;
-    }
-
-    public static List<Move> findPossibleMoves(String[][] board, List<String> rackWithBlanks) {
+     private static final Logger logger = LoggerFactory.getLogger(Util.class);
+     public static List<Move> findPossibleMoves(String[][] board, List<String> rackWithBlanks) {
         Set<List<String>> racks = generateFullRackCombinations(rackWithBlanks);
-//        System.out.println(racks.size());
         Set<String> subracks = new HashSet<>();
         for (List<String> rack: racks) {
             generateSubrackCombinations(subracks, rack);
         }
-        Map<Integer, List<String>> groupedByLength = subracks.stream()
-                .collect(Collectors.groupingBy(String::length));
         List<Move> moves = new ArrayList<>();
         if (checkFirstMove(board)) {
-            Set<String> firstMoveWords = new HashSet<>();
-                for (String subrack : subracks) {
-                    Set<String> validWords = Dict.getDict().getIndexed().get(subrack.toUpperCase());
-                    if (validWords != null) {
-                        Set<String> validWordsWithBlanks = substituteBlanks(subrack, validWords);
-                        firstMoveWords.addAll(validWordsWithBlanks);
-//                        System.out.println("validWordsWithBlanks" + validWordsWithBlanks);
-                    }
-                }
-
-            System.out.println("subracks: " + subracks);
-
-            System.out.println("firstMoveWords: " + firstMoveWords);
-            System.out.println("no. of firstMoveWords: " + firstMoveWords.size());
-            for (var firstMoveWord: firstMoveWords) {
-                int len = firstMoveWord.length();
-                for(int i= 8-len; i<8; i++) {
-                    Move move = new Move();
-                    move.setAcross(false);
-                    for (int j=0; j<len; j++) {
-                        Placement placement = new Placement();
-                        placement.setTile(firstMoveWord.substring(j,j+1));
-                        placement.setRow(i+j);
-                        placement.setCol(7);
-                        move.getPlacements().add(placement);
-                    }
-                    move.setScore(calScore(move, board, null, null));
-
-                    moves.add(move);
-                }
-            }
-
+            evaluateFirstMove(board, subracks, moves);
         } else {
-            Map<String, Move>[][] v = findVerticalSingleTileValidPlacement(board);
-            Map<String, Move>[][] h = findHorizontalSingleTileValidPlacement(board);
-//            for (int i=0; i<15; i++) {
-//                for (int j=0; j<15; j++) {
-//                    boolean b = !v[i][j].isEmpty();
-//                    System.out.println("vertical single tile placement at " + i + "," + j + " is " + b);
-//                }
-//            }
-            System.out.println("find horizontal moves");
-            List<Move> hmoves = new ArrayList<>();
-            for (int i=0; i<15; i++) {
-                String[] row = board[i];
-                System.out.println(Arrays.deepToString(row));
-                findLegalPlacementsOfRowColumn(hmoves, i, true, row, v);
-            }
-            System.out.println("hmoves: " + hmoves);
-
-            System.out.println("find vertical moves");
-            List<Move> vmoves = new ArrayList<>();
-            for (int i=0; i<15; i++) {
-                String[] row = new String[15];
-                for (int j=0; j<15; j++) {
-                    row[j] = board[j][i];
-                }
-                System.out.println(Arrays.deepToString(row));
-                findLegalPlacementsOfRowColumn(vmoves, i, false, row, h);
-            }
-            List<Move> hvmoves = Stream.concat(hmoves.stream(), vmoves.stream())
-                    .collect(Collectors.toList());
-            for (Move tm: hvmoves) {
-                List<String> usedTiles = groupedByLength.get(tm.getNoOfPlayedTiles()); //I
-                if (usedTiles != null) {
-                    for (String s : usedTiles) {
-                        String joined = s + String.join("", tm.getExistingTiles()); //QI
-                        String alphabetized = Util.alphabetize2(joined.toUpperCase());
-                        Set<String> validWords = Dict.getDict().getIndexed().get(alphabetized); //1 match
-                        if (validWords != null) {
-                            Set<String> validWordsWithBlanks = substituteBlanks(joined, validWords);
-                            for (String validWord : validWordsWithBlanks) {
-                                Move m = new Move();
-                                m.setAcross(tm.isAcross());
-                                int len = validWord.length();
-                                boolean valid = true;
-                                List<Placement> tps = tm.getPlacements();
-                                List<Placement> ps = new ArrayList<>();
-                                for (int i = 0; i < len; i++) {
-                                    Placement tp = tps.get(i);
-                                    Placement p = new Placement();
-                                    p.setCol(tp.getCol());
-                                    p.setRow(tp.getRow());
-                                    String tile = String.valueOf(validWord.charAt(i));
-                                    if (tps.get(i).isExisting()) {
-                                        if (validWord.charAt(i) >= 'a' && validWord.charAt(i) <= 'z') {
-                                            valid = false;
-                                            break;
-                                        }
-                                        if (!tile.equals(tp.getTile())) {
-                                            valid = false;
-                                            break;
-                                        }
-                                        p.setExisting(true);
-                                        p.setTile(tp.getTile());
-                                    } else {
-                                        Map<String, Move> st;
-                                        if (tm.isAcross()) {
-                                            st = v[tp.getRow()][tp.getCol()];
-                                        } else {
-                                            st = h[tp.getRow()][tp.getCol()];
-                                        }
-
-                                        if (!st.containsKey(tile.toUpperCase()) && !st.containsKey("Any")) {
-                                            valid = false;
-                                            break;
-                                        }
-                                        p.setExisting(false);
-                                        p.setTile(tile);
-                                    }
-                                    ps.add(p);
-                                }
-                                if (valid) {
-                                    m.setPlacements(ps);
-                                    m.setScore(Util.calScore(m, board, v, h));
-                                    moves.add(m);
-                                }
-                            }
-//                        System.out.println("validWordsWithBlanks" + validWordsWithBlanks);
-                        }
-                    }
-                }
-            }
-
+            evaluateSubsequentMoves(board, subracks, moves);
         }
-        System.out.println("All moves: " + moves);
+        logger.debug("All moves: " + moves);
 
         moves.sort(Comparator.comparingInt(Move::getScore).reversed());
-        System.out.println("Top 10 moves: " + moves.subList(0,Math.min(moves.size(),10)));
         return moves;
+    }
+
+    @NotNull
+    private static List<Move> getHvMoves(String[][] board, Map<String, Move>[][] v, Map<String, Move>[][] h) {
+        logger.debug("find horizontal moves");
+        List<Move> hmoves = new ArrayList<>();
+        for (int i=0; i<15; i++) {
+            String[] row = board[i];
+            logger.debug(Arrays.deepToString(row));
+            findLegalPlacementsOfRowColumn(hmoves, i, true, row, v);
+        }
+        logger.debug("hmoves: " + hmoves);
+
+        logger.debug("find vertical moves");
+        List<Move> vmoves = new ArrayList<>();
+        for (int i=0; i<15; i++) {
+            String[] row = new String[15];
+            for (int j=0; j<15; j++) {
+                row[j] = board[j][i];
+            }
+            logger.debug(Arrays.deepToString(row));
+            findLegalPlacementsOfRowColumn(vmoves, i, false, row, h);
+        }
+        return Stream.concat(hmoves.stream(), vmoves.stream())
+                .collect(Collectors.toList());
+    }
+
+    private static void evaluateFirstMove(String[][] board, Set<String> subracks, List<Move> moves) {
+        Set<String> firstMoveWords = new HashSet<>();
+        for (String subrack : subracks) {
+            Set<String> validWords = Dict.getDict().getIndexed().get(subrack.toUpperCase());
+            if (validWords != null) {
+                Set<String> validWordsWithBlanks = substituteBlanks(subrack, validWords);
+                firstMoveWords.addAll(validWordsWithBlanks);
+            }
+        }
+
+        logger.debug("subracks: " + subracks);
+        logger.debug("firstMoveWords: " + firstMoveWords);
+        for (var firstMoveWord: firstMoveWords) {
+            int len = firstMoveWord.length();
+            for(int i= 8-len; i<8; i++) {
+                Move move = new Move();
+                move.setAcross(false);
+                for (int j=0; j<len; j++) {
+                    Placement placement = new Placement();
+                    placement.setTile(firstMoveWord.substring(j,j+1));
+                    placement.setRow(i+j);
+                    placement.setCol(7);
+                    move.getPlacements().add(placement);
+                }
+                move.setScore(calScore(move, board, null, null));
+
+                moves.add(move);
+            }
+        }
+    }
+
+    private static void evaluateSubsequentMoves(String[][] board, Set<String> subracks, List<Move> moves) {
+        Map<String, Move>[][] v = findVerticalSingleTileValidPlacement(board);
+        Map<String, Move>[][] h = findHorizontalSingleTileValidPlacement(board);
+
+        List<Move> hvMoves = getHvMoves(board, v, h);
+        Map<Integer, List<String>> groupedByLength = subracks.stream()
+                .collect(Collectors.groupingBy(String::length));
+        for (Move tm: hvMoves) {
+            List<String> usedTiles = groupedByLength.get(tm.getNoOfPlayedTiles()); //I
+            if (usedTiles != null) {
+                for (String s : usedTiles) {
+                    String joined = s + String.join("", tm.getExistingTiles()); //QI
+                    String alphabetized = Util.alphabetize2(joined.toUpperCase());
+                    Set<String> validWords = Dict.getDict().getIndexed().get(alphabetized); //1 match
+                    if (validWords != null) {
+                        Set<String> validWordsWithBlanks = substituteBlanks(joined, validWords);
+                        for (String validWord : validWordsWithBlanks) {
+                            Move m = new Move();
+                            m.setAcross(tm.isAcross());
+                            int len = validWord.length();
+                            boolean valid = true;
+                            List<Placement> tps = tm.getPlacements();
+                            List<Placement> ps = new ArrayList<>();
+                            for (int i = 0; i < len; i++) {
+                                Placement tp = tps.get(i);
+                                Placement p = new Placement();
+                                p.setCol(tp.getCol());
+                                p.setRow(tp.getRow());
+                                String tile = String.valueOf(validWord.charAt(i));
+                                if (tps.get(i).isExisting()) {
+                                    if (validWord.charAt(i) >= 'a' && validWord.charAt(i) <= 'z') {
+                                        valid = false;
+                                        break;
+                                    }
+                                    if (!tile.equals(tp.getTile())) {
+                                        valid = false;
+                                        break;
+                                    }
+                                    p.setExisting(true);
+                                    p.setTile(tp.getTile());
+                                } else {
+                                    Map<String, Move> st;
+                                    if (tm.isAcross()) {
+                                        st = v[tp.getRow()][tp.getCol()];
+                                    } else {
+                                        st = h[tp.getRow()][tp.getCol()];
+                                    }
+
+                                    if (!st.containsKey(tile.toUpperCase()) && !st.containsKey("Any")) {
+                                        valid = false;
+                                        break;
+                                    }
+                                    p.setExisting(false);
+                                    p.setTile(tile);
+                                }
+                                ps.add(p);
+                            }
+                            if (valid) {
+                                m.setPlacements(ps);
+                                m.setScore(Util.calScore(m, board, v, h));
+                                moves.add(m);
+                            }
+                        }
+//                        logger.debug("validWordsWithBlanks" + validWordsWithBlanks);
+                    }
+                }
+            }
+        }
     }
 
     public static Set<String> substituteBlanks(String subrack, Set<String> validWords) {
@@ -161,21 +159,17 @@ public class Util {
                 blanks.add(c);
             }
         }
-        if (blanks.size() ==0) {
+        if (blanks.isEmpty()) {
             return validWords;
         }
         Set<String> validWordsWithBlanks = new HashSet<>();
         if (blanks.size() ==1) {
             int count = validWords.stream().findFirst().get().split(String.valueOf(blanks.get(0)).toUpperCase(),-1).length-1;
-//            System.out.println(count);
             for(var validWord: validWords) {
                 for (int j=0; j<count; j++) {
                     char[] ca = validWord.toCharArray();
                     ca[ordinalIndexOf(validWord, String.valueOf(blanks.get(0)).toUpperCase(), j)] = blanks.get(0);
                     validWordsWithBlanks.add(String.valueOf(ca));
-//                    System.out.println(String.valueOf(ca));
-
-//                    validWordsWithBlanks.add(validWord.replace(Character.toUpperCase(blanks.get(0)),blanks.get(0)), );
                 }
             }
         } else if (blanks.size() == 2) {
@@ -189,16 +183,14 @@ public class Util {
                                 char[] ca = validWord.toCharArray();
                                 ca[ordinalIndexOf(validWord, String.valueOf(blanks.get(0)).toUpperCase(), j)] = blanks.get(0);
                                 ca[ordinalIndexOf(validWord, String.valueOf(blanks.get(1)).toUpperCase(), k)] = blanks.get(1);
-//                                System.out.println(String.valueOf(ca));
+//                                logger.debug(String.valueOf(ca));
                                 validWordsWithBlanks.add(String.valueOf(ca));
                             }
-//                    validWordsWithBlanks.add(validWord.replace(Character.toUpperCase(blanks.get(0)),blanks.get(0)), );
                         }
                     }
                 }
 
         }
-//        System.out.println(validWordsWithBlanks);
         return validWordsWithBlanks;
     }
 
@@ -282,15 +274,19 @@ public class Util {
             wordScore += 50;
         }
         sum += wordScore;
+
+        // add side word scores
         if (h != null && v != null) {
             for (Placement placement : move.getPlacements()) {
                 if (!placement.isExisting()) {
                     if (across) {
-                        if (v[placement.getRow()][placement.getCol()].get(placement.getTile()) != null)
-                            sum += v[placement.getRow()][placement.getCol()].get(placement.getTile()).getScore();
+                        Move vmove = v[placement.getRow()][placement.getCol()].get(placement.getTile());
+                        if (vmove != null)
+                            sum += vmove.getScore();
                     } else {
-                        if (h[placement.getRow()][placement.getCol()].get(placement.getTile()) != null)
-                            sum += h[placement.getRow()][placement.getCol()].get(placement.getTile()).getScore();
+                        Move hmove = h[placement.getRow()][placement.getCol()].get(placement.getTile());
+                        if (hmove != null)
+                            sum += hmove.getScore();
                     }
                 }
             }
@@ -303,6 +299,12 @@ public class Util {
             return 0;
         }
         return TileInfo.tileValue.get(tile);
+    }
+
+    public static String alphabetize(List<String> str) {
+        str.sort(String.CASE_INSENSITIVE_ORDER);
+        String joined = str.stream().collect(Collectors.joining());
+        return joined;
     }
 
     public static String alphabetize2(String line) {
@@ -320,7 +322,9 @@ public class Util {
     }
 
     public static void printBoard(String[][] board) {
-        System.out.println("  .A.B.C.D.E.F.G.H.I.J.K.L.M.N.O.");
+        System.out.println("Current board:");
+        System.out.println("   A.B.C.D.E.F.G.H.I.J.K.L.M.N.O ");
+        System.out.println("  _______________________________");
         for (int i=0; i<15; i++) {
             StringBuilder sb = new StringBuilder();
             if (i+1<10) {
@@ -328,13 +332,19 @@ public class Util {
             } else {
                 sb.append(i+1);
             }
-            sb.append(".");
+            sb.append("|");
             for (int j=0; j<15; j++) {
                 sb.append(board[i][j]);
-                sb.append(".");
+                if (j != 14) {
+                    sb.append(".");
+                } else {
+                    sb.append("|");
+                }
             }
             System.out.println(sb);
         }
+        System.out.println("  -------------------------------");
+
     }
 
     public static Map<String,Move>[][] findVerticalSingleTileValidPlacement(String[][] board) {
@@ -356,22 +366,28 @@ public class Util {
                         b++;
                     }
                     if (prefix.length() != 0 || suffix.length() != 0) {
-                        for (Tile t : Tile.values()) {
-                            String word = prefix + t.getLetter() + suffix;
-                            if (Dict.getDict().getFullDict().contains(word)) {
-                                Move move = new Move();
-                                move.setAcross(false);
-                                for (int k=i-prefix.length(); k<= i+suffix.length() ; k++) {
-                                    Placement placement = new Placement();
-                                    placement.setRow(k);
-                                    placement.setCol(j);
-                                    placement.setTile(String.valueOf(word.charAt(k-i+prefix.length())));
-                                    if (k != i)
-                                    placement.setExisting(true);
-                                    move.getPlacements().add(placement);
+                        for (Tile tile : Tile.values()) {
+                            String l = tile.getLetter();
+                            String word = prefix + l + suffix;
+                            if (Dict.getDict().getFullDict().contains(word.toUpperCase())) {
+                                for (String t : List.of(l, l.toLowerCase())) {
+                                    Move move = new Move();
+                                    move.setAcross(false);
+                                    for (int k = i - prefix.length(); k <= i + suffix.length(); k++) {
+                                        Placement placement = new Placement();
+                                        placement.setRow(k);
+                                        placement.setCol(j);
+                                        if (k == i) {
+                                            placement.setTile(t);
+                                        } else  {
+                                            placement.setTile(String.valueOf(word.charAt(k - i + prefix.length())));
+                                            placement.setExisting(true);
+                                        }
+                                        move.getPlacements().add(placement);
+                                    }
+                                    move.setScore(calScore(move, board, null, null));
+                                    map.put(t, move);
                                 }
-                                move.setScore(calScore(move, board, null, null));
-                                map.put(t.getLetter(), move);
                             }
                         }
 
@@ -382,12 +398,11 @@ public class Util {
                 singleTileBoard[i][j] = map;
             }
         }
-        System.out.println("vertical single tile");
+        logger.debug("vertical single tile");
         for (int i=0; i<15; i++) {
             for (int j=0; j<15; j++) {
                 if (!singleTileBoard[i][j].isEmpty() && !singleTileBoard[i][j].containsKey("Any")) {
-//                    System.out.println("printing single tile board" + i + " " + j);
-                    System.out.println(singleTileBoard[i][j].entrySet());
+                    logger.debug(singleTileBoard[i][j].entrySet().toString());
                 }
             }
         }
@@ -413,22 +428,28 @@ public class Util {
                         b++;
                     }
                     if (prefix.length() != 0 || suffix.length() != 0) {
-                        for (Tile t : Tile.values()) {
-                            String word = prefix + t.getLetter() + suffix;
-                            if (Dict.getDict().getFullDict().contains(word)) {
-                                Move move = new Move();
-                                move.setAcross(true);
-                                for (int k=j-prefix.length(); k<= j+suffix.length() ; k++) {
-                                    Placement placement = new Placement();
-                                    placement.setRow(i);
-                                    placement.setCol(k);
-                                    placement.setTile(String.valueOf(word.charAt(k-j+prefix.length())));
-                                    if (k != j)
-                                        placement.setExisting(true);
-                                    move.getPlacements().add(placement);
+                        for (Tile tile : Tile.values()) {
+                            String l = tile.getLetter();
+                            String word = prefix + l + suffix;
+                            if (Dict.getDict().getFullDict().contains(word.toUpperCase())) {
+                                for (String t : List.of(l, l.toLowerCase())) {
+                                    Move move = new Move();
+                                    move.setAcross(true);
+                                    for (int k = j - prefix.length(); k <= j + suffix.length(); k++) {
+                                        Placement placement = new Placement();
+                                        placement.setRow(i);
+                                        placement.setCol(k);
+                                        if (k == j) {
+                                            placement.setTile(t);
+                                        } else {
+                                            placement.setTile(String.valueOf(word.charAt(k - j + prefix.length())));
+                                            placement.setExisting(true);
+                                        }
+                                        move.getPlacements().add(placement);
+                                    }
+                                    move.setScore(calScore(move, board, null, null));
+                                    map.put(t, move);
                                 }
-                                move.setScore(calScore(move, board, null, null));
-                                map.put(t.getLetter(), move);
                             }
                         }
                     } else {
@@ -438,25 +459,21 @@ public class Util {
                 singleTileBoard[i][j] = map;
             }
         }
-        System.out.println("horizontal single tile");
+        logger.debug("horizontal single tile");
         for (int i=0; i<15; i++) {
             for (int j=0; j<15; j++) {
                 if (!singleTileBoard[i][j].isEmpty() && !singleTileBoard[i][j].containsKey("Any")) {
-//                    System.out.println("printing single tile board" + i + " " + j);
-                    System.out.println(singleTileBoard[i][j].entrySet());
+//                    logger.debug("printing single tile board" + i + " " + j);
+                    logger.debug(singleTileBoard[i][j].entrySet().toString());
                 }
             }
         }
         return singleTileBoard;
     }
 
-    //public static List<Move> findmovesInEachRowColumn(Set<String> subracks, String[][] board) {
-
-    //}
-
     public static void findLegalPlacementsOfRowColumn(List<Move> hvmoves, int n, boolean across, String[] line, Map<String, Move>[][] s) {
         List<Move> m = new ArrayList<>();
-//        System.out.println("n: " + n);
+//        logger.debug("n: " + n);
         for (int i=1; i<=7; i++) {
 
             for (int j=0; j<15; j++) {
@@ -478,7 +495,7 @@ public class Util {
                         if (line[idx].equals(" ")) {
                             if (across && s[n][idx].isEmpty()) break;
                             if (!across && s[idx][n].isEmpty()) break;
-//                            System.out.println("v[idx][n].isEmpty() = " + v[idx][n].isEmpty());
+//                            logger.debug("v[idx][n].isEmpty() = " + v[idx][n].isEmpty());
                             if (across && !s[n][idx].containsKey("Any")) valid = true;
                             if (!across && !s[idx][n].containsKey("Any")) valid = true;
 
@@ -494,13 +511,13 @@ public class Util {
                     }
 
                     if (valid && tilesRemaining==0) {
-//                        System.out.println("Adding move: " + move);
+//                        logger.debug("Adding move: " + move);
                         m.add(move);
                     }
                 }
             }
         }
         hvmoves.addAll(m);
-        System.out.println(m);
+        logger.debug(m.toString());
     }
 }
