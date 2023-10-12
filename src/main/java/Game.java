@@ -47,11 +47,11 @@ public class Game {
         this.bag = bag;
     }
 
-    public int getP1Score() {
+    public int getPlayer1Score() {
         return getTotalScore(p1Turns);
     }
 
-    public int getP2Score() {
+    public int getPlayer2Score() {
         return getTotalScore(p2Turns);
     }
 
@@ -132,34 +132,37 @@ public class Game {
         System.out.println("Current Player: " + getCurrentPlayer());
         System.out.println("Rack to play: " + turn.getRack());
         List<Move> moves = Util.findPossibleMoves(board, turn.getRack());
-//        System.out.println("All moves" + moves);
         if (moves.isEmpty()) {
             turn.setPass(true);
         } else {
             turn.setMoves(moves);
             chooseTopScoreMove(turn, moves);
             System.out.println("Top 10 moves: " + moves.subList(0,Math.min(moves.size(),10)));
-//            System.out.println("Highest scoring move: " + turn.getMove());
         }
         updateBoard(turn.getMove());
-        Turn newTurn = new Turn();
-        List<String> newRack = new ArrayList<>(turn.getRack());
+        System.out.println("Chosen turn: " + turn);
         List<String> convertedBlanks = turn.getMove().getPlayedTiles().stream()
                 .map(a -> a.charAt(0) >= 'a' && a.charAt(0) <= 'z' ? "_" : a).toList();
         System.out.println("Played Tiles: " + convertedBlanks);
-        System.out.println("Chosen turn: " + turn);
+
         System.out.println("Current total score of " + getCurrentPlayer() + " is " + getTotalScore(getCurrentPlayerTurns()));
 
+        prepareNextTurnOfCurrentPlayer(turn, convertedBlanks);
+
+        Util.printBoard(board);
+    }
+
+    private void prepareNextTurnOfCurrentPlayer(Turn turn, List<String> convertedBlanks) {
+        Turn newTurn = new Turn();
+        List<String> newRack = new ArrayList<>(turn.getRack());
         convertedBlanks.forEach(newRack::remove);
         System.out.println("Rack before replenishment: " + newRack);
         newRack = replenishRack(newRack);
         Collections.sort(newRack);
-//        System.out.println("newRack" + newRack);
         newTurn.setRack(newRack);
         getCurrentPlayerTurns().add(newTurn);
         System.out.println("Rack after replenishment: " + newTurn.getRack());
         System.out.println("No. of tiles in bag: " + bag.size());
-        Util.printBoard(board);
     }
 
     private void updateBoard(Move move) {

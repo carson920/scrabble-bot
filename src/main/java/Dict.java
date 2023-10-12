@@ -11,38 +11,22 @@ public class Dict {
     private Dict() throws IOException {
 
         try (Stream<String> lines = Files.lines(Paths.get("csw19.txt"), Charset.defaultCharset())) {
-            lines.forEachOrdered(line -> process(line));
+            lines.forEachOrdered(this::process);
         }
-    };
+    }
 
     public static Dict getDict() {
         if (single_dict == null) {
             try {
                 single_dict = new Dict();
             } catch (IOException e) {
-
+                System.out.println("Failed to load dictionary");
             }
         }
 
         return single_dict;
     }
 
-//    List<String> twos = new ArrayList<>();
-//    List<String> threes = new ArrayList<>();
-//    List<String> fours = new ArrayList<>();
-//    List<String> fives = new ArrayList<>();
-//    List<String> sixes = new ArrayList<>();
-//    List<String> sevens = new ArrayList<>();
-//    List<String> eights = new ArrayList<>();
-//    List<String> nines = new ArrayList<>();
-//    List<String> tens = new ArrayList<>();
-//    List<String> elevens = new ArrayList<>();
-//    List<String> twelves = new ArrayList<>();
-//    List<String> thirteens = new ArrayList<>();
-//    List<String> fourteens = new ArrayList<>();
-//    List<String> fifteens = new ArrayList<>();
-
-//    private static Map<Integer, List<String>> dict = new HashMap<>();
     private static Map<String, Set<String>> indexed = new HashMap<>();
 
     public Set<String> getFullDict() {

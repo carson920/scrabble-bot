@@ -1,4 +1,4 @@
-public enum PremiumSqaure {
+public enum PremiumSquare {
     TW (1,3),
     DW (1,2),
     TL (3,1),
@@ -16,7 +16,7 @@ public enum PremiumSqaure {
     private final int letterMultiply;
     private final int wordMultiply;
 
-    PremiumSqaure(int letterMultiply, int wordMultiply) {
+    PremiumSquare(int letterMultiply, int wordMultiply) {
         this.letterMultiply = letterMultiply;
         this.wordMultiply = wordMultiply;
     }

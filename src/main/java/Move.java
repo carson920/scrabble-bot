@@ -41,7 +41,7 @@ public class Move {
     }
 
     public List<String> getExistingTiles() {
-        return getPlacements().stream().filter(a -> a.isExisting()).map(Placement::getTile).collect(Collectors.toList());
+        return getPlacements().stream().filter(Placement::isExisting).map(Placement::getTile).collect(Collectors.toList());
     }
 
     public String getFirstCoordinates() {
@@ -58,7 +58,7 @@ public class Move {
     public String toString() {
         if (getPlacements().isEmpty()) return "To be evaluated";
         return  getFirstCoordinates() +
-                " " + String.join("", placements.stream().map(Placement::getTile).collect(Collectors.toList())) +
+                " " + placements.stream().map(Placement::getTile).collect(Collectors.joining("")) +
                 " " + score;
     }
 }

@@ -10,7 +10,7 @@
     </appender>
 
     <!-- Optionally, specify a log level for the appender -->
-    <root level="debug">
+    <root level="info">
         <appender-ref ref="fileAppender"/>
     </root>
 </configuration>

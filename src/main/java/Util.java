@@ -205,19 +205,11 @@ public class Util {
                 }
             }
             subracks.add(sb.toString());
-
         }
     }
 
     private static boolean checkFirstMove(String[][] board) {
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[0].length; j++) {
-                if (board[i][j] != " ") {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return board[7][7].equals(" ");
     }
 
     private static Set<List<String>> generateFullRackCombinations(List<String> rackWithBlanks) {
@@ -229,7 +221,7 @@ public class Util {
             racks.add(rack);
         } else if (blankCount == 1) {
             for (char tile = 'a'; tile <= 'z'; tile++) {
-                List<String> replacedRack = new ArrayList(rack);
+                List<String> replacedRack = new ArrayList<>(rack);
                 replacedRack.add(String.valueOf(tile));
                 racks.add(replacedRack);
             }
@@ -237,7 +229,7 @@ public class Util {
             for (char tile = 'a'; tile <= 'z'; tile++) {
                 for (char tile2 = 'a'; tile2 <= 'z'; tile2++) {
                     if (tile >= tile2) {
-                        List<String> replacedRack = new ArrayList(rack);
+                        List<String> replacedRack = new ArrayList<>(rack);
                         replacedRack.add(String.valueOf(tile));
                         replacedRack.add(String.valueOf(tile2));
                         racks.add(replacedRack);
@@ -248,10 +240,10 @@ public class Util {
         return racks;
     }
 
-    public static PremiumSqaure getPremiumSquare(int x, int y) {
+    public static PremiumSquare getPremiumSquare(int x, int y) {
         return Board.getPremiumSquares()[x][y];
     }
-    public static PremiumSqaure getPremiumSquare(Placement placement) {
+    public static PremiumSquare getPremiumSquare(Placement placement) {
         return getPremiumSquare(placement.getRow(),placement.getCol());
     }
 
@@ -303,8 +295,7 @@ public class Util {
 
     public static String alphabetize(List<String> str) {
         str.sort(String.CASE_INSENSITIVE_ORDER);
-        String joined = str.stream().collect(Collectors.joining());
-        return joined;
+        return String.join("", str);
     }
 
     public static String alphabetize2(String line) {
@@ -328,7 +319,7 @@ public class Util {
         for (int i=0; i<15; i++) {
             StringBuilder sb = new StringBuilder();
             if (i+1<10) {
-                sb.append(" " + (i+1) );
+                sb.append(" ").append(i + 1);
             } else {
                 sb.append(i+1);
             }
@@ -352,16 +343,16 @@ public class Util {
         for (int i=0; i<15; i++) {
             for (int j=0; j<15; j++) {
                 Map<String,Move> map = new HashMap<>();
-                if (board[i][j] == " ") {
+                if (board[i][j].equals(" ")) {
                     int a = i - 1;
                     String prefix = "";
-                    while (a >= 0 && !(board[a][j] == " ")) {
+                    while (a >= 0 && !(board[a][j].equals(" "))) {
                         prefix = board[a][j] + prefix;
                         a--;
                     }
                     int b = i + 1;
                     String suffix = "";
-                    while (b < 15 && !(board[b][j] == " ")) {
+                    while (b < 15 && !(board[b][j].equals(" "))) {
                         suffix = suffix + board[b][j];
                         b++;
                     }
@@ -414,16 +405,16 @@ public class Util {
         for (int i=0; i<15; i++) {
             for (int j=0; j<15; j++) {
                 Map<String,Move> map = new HashMap<>();
-                if (board[i][j] == " ") {
+                if (board[i][j].equals(" ")) {
                     int a = j - 1;
                     String prefix = "";
-                    while (a >= 0 && !(board[i][a] == " ")) {
+                    while (a >= 0 && !(board[i][a].equals(" "))) {
                         prefix = board[i][a] + prefix;
                         a--;
                     }
                     int b = j + 1;
                     String suffix = "";
-                    while (b < 15 && !(board[i][b] == " ")) {
+                    while (b < 15 && !(board[i][b].equals(" "))) {
                         suffix = suffix + board[i][b];
                         b++;
                     }
