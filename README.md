@@ -1,8 +1,19 @@
 # scrabble-bot
 Bots playing scrabble games. Can be adapted for statistical purposes.
-Assumed to play the highest score move every turn.
+Play the highest scoring move every turn.
 
-Sample output:
+How to run:
+
+Ask the bot to play 1 game:
+    java -jar scrabble-bot.jar
+
+To play more than one game, specify an integer as the first parameter. e.g
+    java -jar scrabble-bot.jar 10
+
+To direct the console output to a file, specify a file name as the second parameter. e.g.
+    java -jar scrabble-bot.jar 10 output.txt
+
+Sample output (extracted):
 
     Current Player: Player 1
     Rack to play: [A, A, A, I, N, P, R]

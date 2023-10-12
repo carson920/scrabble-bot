@@ -1,4 +1,3 @@
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,7 +24,6 @@ public class Util {
         return moves;
     }
 
-    @NotNull
     private static List<Move> getHvMoves(String[][] board, Map<String, Move>[][] v, Map<String, Move>[][] h) {
         logger.debug("find horizontal moves");
         List<Move> hmoves = new ArrayList<>();
