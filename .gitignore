@@ -1,0 +1,8 @@
+# Ignore log files
+*.log
+
+# Ignore build artifacts
+target/
+
+# Ignore temporary directories
+temp/
