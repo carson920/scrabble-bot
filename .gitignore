@@ -2,7 +2,7 @@
 *.log
 
 # Ignore build artifacts
-target/
+target/classes
 
 # Ignore temporary directories
 temp/
