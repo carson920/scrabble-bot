@@ -12,11 +12,11 @@ public class Game {
         Collections.shuffle(bag);
         Turn p1Turn = new Turn();
         p1Turn.setRack(replenishRack(new ArrayList<>()));
-        System.out.println("P1 starting rack: " + p1Turn.getRack());
+        System.out.println("Player 1 starting rack: " + p1Turn.getRack());
         p1Turns.add(p1Turn);
         Turn p2Turn = new Turn();
         p2Turn.setRack(replenishRack(new ArrayList<>()));
-        System.out.println("P2 starting rack: " + p2Turn.getRack());
+        System.out.println("Player 2 starting rack: " + p2Turn.getRack());
         p2Turns.add(p2Turn);
         for (int i=0; i<15; i++) {
             for (int j=0; j<15; j++) {
@@ -76,8 +76,6 @@ public class Game {
     }
 
     public Turn getCurrentTurn() {
-        System.out.println("p1turn size: " + getP1Turns().size());
-        System.out.println("p2turn size: " + getP2Turns().size());
         if (getP1Turns().size() == getP2Turns().size()) {
             return getP1Turns().get(getP1Turns().size()-1);
         } else {
@@ -85,8 +83,6 @@ public class Game {
         }
     }
     public Turn getPreviousTurn() {
-        System.out.println("p1turn size: " + getP1Turns().size());
-        System.out.println("p2turn size: " + getP2Turns().size());
         if (getP1Turns().size() == getP2Turns().size()) {
             return getP2Turns().get(getP2Turns().size()-1);
         } else {
@@ -102,6 +98,27 @@ public class Game {
         }
     }
 
+    public List<Turn> getAnotherPlayerTurns() {
+        if (getP1Turns().size() == getP2Turns().size()) {
+            return getP2Turns();
+        } else {
+            return getP1Turns();
+        }
+    }
+
+    public boolean checkIfPlayerPassedLastTurn(List<Turn> turns) {
+        if (turns.size() > 1) {
+            return turns.get(turns.size()-2).isPass();
+        } else {
+            return false;
+        }
+    }
+
+    public boolean checkIfBothPlayerPassed() {
+        return checkIfPlayerPassedLastTurn(getCurrentPlayerTurns()) &&
+                checkIfPlayerPassedLastTurn(getAnotherPlayerTurns());
+    }
+
     public String getCurrentPlayer() {
         if (getP1Turns().size() == getP2Turns().size()) {
             return "Player 1";
@@ -111,10 +128,9 @@ public class Game {
     }
 
     public void evaluateNextTurn() {
-        getCurrentPlayerTurns();
         Turn turn = getCurrentTurn();
-        System.out.println("Evaluating the turn:" + turn);
-        System.out.println("Before Find Rack: " + turn.getRack());
+        System.out.println("Current Player: " + getCurrentPlayer());
+        System.out.println("Rack to play: " + turn.getRack());
         List<Move> moves = Util.findPossibleMoves(board, turn.getRack());
 //        System.out.println("All moves" + moves);
         if (moves.isEmpty()) {
@@ -122,18 +138,16 @@ public class Game {
         } else {
             turn.setMoves(moves);
             chooseTopScoreMove(turn, moves);
-            System.out.println("Top score move: " + turn.getMove());
+            System.out.println("Top 10 moves: " + moves.subList(0,Math.min(moves.size(),10)));
+//            System.out.println("Highest scoring move: " + turn.getMove());
         }
         updateBoard(turn.getMove());
         Turn newTurn = new Turn();
         List<String> newRack = new ArrayList<>(turn.getRack());
-        System.out.println("Before Converted Rack: " + turn.getRack());
         List<String> convertedBlanks = turn.getMove().getPlayedTiles().stream()
                 .map(a -> a.charAt(0) >= 'a' && a.charAt(0) <= 'z' ? "_" : a).toList();
-        System.out.println("Before Rack: " + turn.getRack());
         System.out.println("Played Tiles: " + convertedBlanks);
-//        newRack.removeAll(convertedBlanks);
-        System.out.println("Completed turn: " + turn);
+        System.out.println("Chosen turn: " + turn);
         System.out.println("Current total score of " + getCurrentPlayer() + " is " + getTotalScore(getCurrentPlayerTurns()));
 
         convertedBlanks.forEach(newRack::remove);
@@ -143,11 +157,9 @@ public class Game {
 //        System.out.println("newRack" + newRack);
         newTurn.setRack(newRack);
         getCurrentPlayerTurns().add(newTurn);
-
-
-        System.out.println("After Rack: " + newTurn.getRack());
+        System.out.println("Rack after replenishment: " + newTurn.getRack());
+        System.out.println("No. of tiles in bag: " + bag.size());
         Util.printBoard(board);
-        System.out.println("Tiles in bag: " + bag.size());
     }
 
     private void updateBoard(Move move) {
