@@ -1,5 +1,5 @@
 # scrabble-bot
-Bots playing scrabble games. Can be adapted for statistical purposes. e.g the probability of KINGWOOD being played in a game.
+Bots playing scrabble games. Can be adapted for statistical purposes.
 Assumed to play the highest score move every turn.
 
 Sample output:
@@ -14,7 +14,7 @@ Sample output:
     Rack after replenishment: [E, E, N, O, O, O, V]
     No. of tiles in bag: 68
     Current board:
-    A.B.C.D.E.F.G.H.I.J.K.L.M.N.O
+       A.B.C.D.E.F.G.H.I.J.K.L.M.N.O
       _______________________________
      1| . . . . . . . . . . . . . . |
      2| . . . . . . . . . . . . . . |
