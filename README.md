@@ -5,12 +5,15 @@ Play the highest scoring move every turn.
 How to run:
 
 Ask the bot to play 1 game:
+
     java -jar scrabble-bot.jar
 
 To play more than one game, specify an integer as the first parameter. e.g
+
     java -jar scrabble-bot.jar 10
 
 To direct the console output to a file, specify a file name as the second parameter. e.g.
+
     java -jar scrabble-bot.jar 10 output.txt
 
 Sample output (extracted):
