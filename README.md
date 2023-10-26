@@ -1,5 +1,5 @@
 # scrabble-bot
-Bots auto-playing Scrabble games. Can be adapted for statistical purposes.
+A bot auto-playing Scrabble games. Can be adapted for statistical purposes. (e.g. how often does a certain word appears)
 Play the highest-scoring move every turn.
 
 Play 1 game:
