@@ -181,7 +181,6 @@ public class Util {
                                 char[] ca = validWord.toCharArray();
                                 ca[ordinalIndexOf(validWord, String.valueOf(blanks.get(0)).toUpperCase(), j)] = blanks.get(0);
                                 ca[ordinalIndexOf(validWord, String.valueOf(blanks.get(1)).toUpperCase(), k)] = blanks.get(1);
-//                                logger.debug(String.valueOf(ca));
                                 validWordsWithBlanks.add(String.valueOf(ca));
                             }
                         }
@@ -462,7 +461,6 @@ public class Util {
 
     public static void findLegalPlacementsOfRowColumn(List<Move> hvmoves, int n, boolean across, String[] line, Map<String, Move>[][] s) {
         List<Move> m = new ArrayList<>();
-//        logger.debug("n: " + n);
         for (int i=1; i<=7; i++) {
 
             for (int j=0; j<15; j++) {
@@ -484,7 +482,6 @@ public class Util {
                         if (line[idx].equals(" ")) {
                             if (across && s[n][idx].isEmpty()) break;
                             if (!across && s[idx][n].isEmpty()) break;
-//                            logger.debug("v[idx][n].isEmpty() = " + v[idx][n].isEmpty());
                             if (across && !s[n][idx].containsKey("Any")) valid = true;
                             if (!across && !s[idx][n].containsKey("Any")) valid = true;
 
@@ -500,7 +497,6 @@ public class Util {
                     }
 
                     if (valid && tilesRemaining==0) {
-//                        logger.debug("Adding move: " + move);
                         m.add(move);
                     }
                 }
