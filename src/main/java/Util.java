@@ -142,7 +142,6 @@ public class Util {
                                 moves.add(m);
                             }
                         }
-//                        logger.debug("validWordsWithBlanks" + validWordsWithBlanks);
                     }
                 }
             }
@@ -451,7 +450,6 @@ public class Util {
         for (int i=0; i<15; i++) {
             for (int j=0; j<15; j++) {
                 if (!singleTileBoard[i][j].isEmpty() && !singleTileBoard[i][j].containsKey("Any")) {
-//                    logger.debug("printing single tile board" + i + " " + j);
                     logger.debug(singleTileBoard[i][j].entrySet().toString());
                 }
             }

@@ -43,7 +43,6 @@ public class Dict {
     private static Set<String> fullDict = new HashSet<>();
 
     private void process(String line) {
-//        dict.get(line.length()).add(line);
         fullDict.add(line);
         indexed.computeIfAbsent(Util.alphabetize2(line), k -> new HashSet<>()).add(line);
     }
