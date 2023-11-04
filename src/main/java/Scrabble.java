@@ -43,7 +43,6 @@ public class Scrabble {
     }
 
     private static void showSummary(Game game) {
-
         List<String> p1rem = game.getP1Turns().get(game.getP1Turns().size()-1).getRack();
         List<String> p2rem = game.getP2Turns().get(game.getP2Turns().size()-1).getRack();
         System.out.println("Player 1 unplayed tiles: " + p1rem);
@@ -72,8 +71,8 @@ public class Scrabble {
         Move p2HighWordMove = game.getP2Turns().stream()
                 .map(Turn::getMove)
                 .max(Comparator.comparingInt(Move::getScore)).get();
-        System.out.println("Player 1 high word score: " + p1HighWordMove);
-        System.out.println("Player 2 high word score: " + p2HighWordMove);
+        System.out.println("Player 1 high word: " + p1HighWordMove);
+        System.out.println("Player 2 high word: " + p2HighWordMove);
         List<Move> p1Bingos = game.getP1Turns().stream()
                 .map(Turn::getMove)
                 .filter(a -> a.getNoOfPlayedTiles() == 7)
