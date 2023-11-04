@@ -4,7 +4,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,11 +75,11 @@ public class Scrabble {
         List<Move> p1Bingos = game.getP1Turns().stream()
                 .map(Turn::getMove)
                 .filter(a -> a.getNoOfPlayedTiles() == 7)
-                .collect(Collectors.toList());
+                .toList();
         List<Move> p2Bingos = game.getP2Turns().stream()
                 .map(Turn::getMove)
                 .filter(a -> a.getNoOfPlayedTiles() == 7)
-                .collect(Collectors.toList());
+                .toList();
         List<Move> allBingos = new ArrayList<>();
         allBingos.addAll(p1Bingos);
         allBingos.addAll(p2Bingos);
