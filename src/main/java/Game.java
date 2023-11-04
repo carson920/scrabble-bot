@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Game {
@@ -30,6 +31,52 @@ public class Game {
 
     List<Turn> p1Turns = new ArrayList<>();
     List<Turn> p2Turns = new ArrayList<>();
+
+    void showSummary() {
+        System.out.println("Game summary:");
+        List<String> p1rem = getP1Turns().get(getP1Turns().size()-1).getRack();
+        List<String> p2rem = getP2Turns().get(getP2Turns().size()-1).getRack();
+        System.out.println("Player 1 unplayed tiles: " + p1rem);
+        System.out.println("Player 2 unplayed tiles: " + p2rem);
+        int p1RemValues = p1rem.stream().map(a -> TileInfo.tileValue.get(a)).mapToInt(Integer::intValue).sum();
+        int p2RemValues = p2rem.stream().map(a -> TileInfo.tileValue.get(a)).mapToInt(Integer::intValue).sum();
+        int p1Adj = 0;
+        int p2Adj = 0;
+        if (!p1rem.isEmpty() && !p2rem.isEmpty()) {
+            p1Adj = -p1RemValues;
+            p2Adj = -p2RemValues;
+        } else if (!p1rem.isEmpty()) {
+            p2Adj = p1RemValues * 2;
+        } else {
+            p1Adj = p2RemValues * 2;
+        }
+        System.out.println("Player 1 score adjustment: " + p1Adj);
+        System.out.println("Player 2 score adjustment: " + p2Adj);
+        System.out.println("Player 1 score before adjustment: " + getPlayer1Score());
+        System.out.println("Player 2 score before adjustment: " + getPlayer2Score());
+        System.out.println("Player 1 final score: " + (getPlayer1Score() + p1Adj));
+        System.out.println("Player 2 final score: " + (getPlayer2Score() + p2Adj));
+        Move p1HighWordMove = getP1Turns().stream()
+                .map(Turn::getMove)
+                .max(Comparator.comparingInt(Move::getScore)).get();
+        Move p2HighWordMove = getP2Turns().stream()
+                .map(Turn::getMove)
+                .max(Comparator.comparingInt(Move::getScore)).get();
+        System.out.println("Player 1 high word: " + p1HighWordMove);
+        System.out.println("Player 2 high word: " + p2HighWordMove);
+        List<Move> p1Bingos = getP1Turns().stream()
+                .map(Turn::getMove)
+                .filter(a -> a.getNoOfPlayedTiles() == 7)
+                .toList();
+        List<Move> p2Bingos = getP2Turns().stream()
+                .map(Turn::getMove)
+                .filter(a -> a.getNoOfPlayedTiles() == 7)
+                .toList();
+        List<Move> allBingos = new ArrayList<>();
+        allBingos.addAll(p1Bingos);
+        allBingos.addAll(p2Bingos);
+        System.out.println("All bingos: " + allBingos);
+    }
 
     public String[][] getBoard() {
         return board;
