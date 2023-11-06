@@ -9,7 +9,7 @@ public class Scrabble {
 
     public static void main(String[] args) throws IOException {
 
-        // Default to play 1 game only if there is no parameter, or the first parameter is not an integer
+        // Default to play 1 game only if no parameter is provided, or if the first parameter is not an integer
         int n = 1;
         try {
             n = Integer.parseInt(args[0]);
@@ -37,5 +37,4 @@ public class Scrabble {
             System.out.println("End of game no. " + i);
         }
     }
-
 }
