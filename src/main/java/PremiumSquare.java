@@ -1,8 +1,18 @@
 public enum PremiumSquare {
+
+    //Triple Word Square
     TW (1,3),
+
+    //Double Word Square
     DW (1,2),
+
+    //Triple Letter Square
     TL (3,1),
+
+    //Double Letter Square (including centre star)
     DL (2,1),
+
+    //Normal Square
     N (1,1);
 
     public int getLetterMultiply() {

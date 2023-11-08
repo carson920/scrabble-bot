@@ -44,7 +44,7 @@ public class Move {
         return getPlacements().stream().filter(Placement::isExisting).map(Placement::getTile).collect(Collectors.toList());
     }
 
-    public String getFirstCoordinates() {
+    public String getFirstTileCoordinatesOfMove() {
         String row = String.valueOf(placements.get(0).getRow() + 1);
         char col = (char) (placements.get(0).getCol() + 65);
         if (isAcross()) {
@@ -57,7 +57,7 @@ public class Move {
     @Override
     public String toString() {
         if (getPlacements().isEmpty()) return "To be evaluated";
-        return  getFirstCoordinates() +
+        return  getFirstTileCoordinatesOfMove() +
                 " " + placements.stream().map(Placement::getTile).collect(Collectors.joining("")) +
                 " " + score;
     }

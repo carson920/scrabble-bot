@@ -6,9 +6,9 @@ import java.util.List;
 public class Game {
 
     public Game() {
-        for (var entry : TileInfo.tileFrequency.entrySet()) {
-            for (int i = entry.getValue(); i > 0; i--)
-                bag.add(entry.getKey());
+        for (var entry : Tile.values()) {
+            for (int i = entry.getFrequency(); i > 0; i--)
+                bag.add(entry.getLetter());
         }
         Collections.shuffle(bag);
         Turn p1Turn = new Turn();
