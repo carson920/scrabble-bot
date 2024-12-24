@@ -1,12 +1,12 @@
 # scrabble-bot
-A bot auto-playing Scrabble games. Can be adapted for statistical purposes. (e.g. how often does a certain word appears)
-Play the highest-scoring move every turn.
+A bot auto-playing Scrabble games. Can be adapted for statistical purposes. (e.g. how often a certain word appears)
+Play the highest scoring word every turn.
 
-Play 1 game:
+Just play 1 game:
 
     java -jar scrabble-bot.jar
 
-Play more than one game (e.g. 10):
+Play more than 1 game (e.g. 10):
 
     java -jar scrabble-bot.jar 10
 
