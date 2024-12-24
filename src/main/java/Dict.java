@@ -40,7 +40,8 @@ public class Dict {
         this.fullDict = fullDict;
     }
 
-    private static Set<String> fullDict = new HashSet<>();
+    private static Set<String>
+            fullDict = new HashSet<>();
 
     private void process(String line) {
         fullDict.add(line);
