@@ -1,6 +1,6 @@
 # scrabble-bot
-A bot auto-playing Scrabble games. Can be adapted for statistical purposes. (e.g. how often a certain word appears)
-Play the highest scoring word every turn.
+
+Find the highest scoring play with a given Scrabble board and rack.
 
 Just play 1 game:
 
@@ -13,6 +13,13 @@ Play more than 1 game (e.g. 10):
 To direct console output to a file, specify a file name:
 
     java -jar scrabble-bot.jar 10 output.txt
+
+The jar file can also be deployed as AWS lambda function.
+It takes the following sample JSON as HTTP request, where "board" is a 15x15 array of array of characters, and "rack" is a string of tiles of player's rack with ? representing blanks.
+
+{"board":[[" "," "," "," "," ","F"," ","K","O"," "," ","F","A","I","R"],[" "," "," "," "," ","L"," ","O","X","Y"," ","O","P","T"," "],[" "," "," "," "," ","O","B","A"," "," ","E","R","E","S"," "],[" "," "," "," "," ","C","A","N"," ","C","A","A","S"," ","D"],[" "," "," "," "," "," ","G"," "," "," ","N"," "," ","P","I"],[" "," "," "," "," ","U","G"," "," ","Q","I"," "," ","A","R"],[" "," "," "," "," "," ","I"," ","D","I","N"," ","Z","I","T"],[" "," "," "," "," "," ","E","M","O","N","G"," ","O","N","Y"],[" "," "," "," "," "," ","s","O","M"," "," ","L","E","T"," "],[" "," "," "," "," "," "," ","U"," "," "," "," ","A","E"," "],[" "," "," "," "," ","V","I","t","A","L","I","S","E","R"," "],[" "," "," ","L"," "," "," ","H"," "," "," "," "," "," "," "],[" "," "," ","U"," "," ","W","E","B","S","T","E","R"," "," "],[" "," ","V","A","W","T","E","D"," ","H","O","N","E","R"," "],[" "," "," ","U"," "," ","E"," "," "," "," ","D","I","E","T"]],"rack":"ABCDE??"}
+
+
 
 Sample output (extracted):
 
