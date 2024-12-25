@@ -75,7 +75,7 @@ Sample output (extracted):
     15| . . . . . . . . . . . . . . |
       -------------------------------
 
-The jar file can also be deployed as AWS lambda function.
+The jar file can also be deployed to AWS Lambda.
 It can take the following sample JSON as HTTP request, where "board" is a 15x15 array of array of characters, and "rack" is a string of tiles of player's rack with underscores representing blanks.
 
     {"board":[[" "," "," "," "," "," "," ","t"," "," "," ","B","U","t","T"],[" "," "," "," "," "," "," ","R"," ","V"," "," "," ","A"," "],[" "," "," "," "," "," ","K","I","N","E","T","I","C","S"," "],[" "," "," "," ","G"," "," ","T"," ","G"," "," "," ","T"," "],[" "," ","F","O","Y"," "," ","O"," "," "," "," "," ","I"," "],[" "," ","O","U","P"," "," ","N"," "," ","B","R","I","E"," "],[" "," ","X","I"," ","M","Z","E","E"," "," "," "," ","R"," "],[" "," "," ","J","I","A","O","S"," "," "," "," "," "," "," "],[" "," ","D","A"," ","E","L"," "," "," "," "," "," "," "," "],[" ","Y","O"," "," "," "," "," "," ","H","O","L","D"," "," "],[" "," ","W"," ","W"," "," ","P","I","A","N","O"," "," "," "],["C","I","N","E","A","S","T","E"," "," "," "," "," "," "," "],["H"," ","E"," ","Q"," "," "," "," "," "," ","E","G","A","L"],["I"," ","D"," ","F"," "," ","O","R","N","A","T","E","R"," "],["V"," "," "," ","S","A","L","U","E"," ","N","A","M","E","D"]],
