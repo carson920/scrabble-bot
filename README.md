@@ -1,5 +1,7 @@
 # scrabble-bot
 
+[2024-12-24] Added support that jar file can be deployed as AWS Lambda function.
+
 Find the highest scoring play with a given Scrabble board and rack.
 
 Just play 1 game:
